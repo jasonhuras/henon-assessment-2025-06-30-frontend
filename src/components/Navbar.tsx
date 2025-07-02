@@ -1,4 +1,4 @@
-import { Grid, Typography, IconButton, useColorScheme, Box } from '@mui/material';
+import { Grid, Typography, IconButton, useColorScheme } from '@mui/material';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,14 +14,14 @@ export default function Navbar(): JSX.Element {
 
     return (
         <Grid container alignItems="center" justifyContent="space-between" sx={{ py: 2 }}>
-            <Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <Typography
                     variant="h6"
                 >
                     Henon Assessment
                 </Typography>
             </Grid>
-            <Grid>
+            <Grid size={{ xs: 11, md: 7 }}>
                 <Grid container spacing={4} alignItems="center">
                     <Grid>
                         <Typography
@@ -53,7 +53,7 @@ export default function Navbar(): JSX.Element {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid >
+            <Grid size={{ xs: 1, md: 1 }}>
                 <IconButton
                     onClick={toggleTheme}
                     sx={{

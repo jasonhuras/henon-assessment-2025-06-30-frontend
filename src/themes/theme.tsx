@@ -1,16 +1,13 @@
 import { createTheme } from '@mui/material/styles';
 
-type ThemeMode = 'light' | 'dark';
-
-export const createAppTheme = (mode: ThemeMode) => createTheme({
-    palette: {
-        mode,
-        primary: {
-            main: '#99C33C',
-        },
-        ...(mode === 'light'
-            ? {
-                // Light mode
+export const theme = createTheme({
+    // Enable both light and dark color schemes
+    colorSchemes: {
+        light: {
+            palette: {
+                primary: {
+                    main: '#99C33C',
+                },
                 background: {
                     default: '#ffffff',
                     paper: '#ffffff',
@@ -20,9 +17,13 @@ export const createAppTheme = (mode: ThemeMode) => createTheme({
                     secondary: '#666666',
                 },
                 divider: '#e0e0e0',
-            }
-            : {
-                // Dark mode
+            },
+        },
+        dark: {
+            palette: {
+                primary: {
+                    main: '#99C33C',
+                },
                 background: {
                     default: '#0a0a0a',
                     paper: '#1a1a1a',
@@ -32,8 +33,10 @@ export const createAppTheme = (mode: ThemeMode) => createTheme({
                     secondary: '#b0b0b0',
                 },
                 divider: '#333333',
-            }),
+            },
+        },
     },
+    // Shared configuration for both themes
     typography: {
         fontFamily: '"Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, sans-serif',
         h1: {
@@ -67,11 +70,11 @@ export const createAppTheme = (mode: ThemeMode) => createTheme({
         },
         MuiCard: {
             styleOverrides: {
-                root: {
-                    boxShadow: mode === 'light'
+                root: ({ theme }) => ({
+                    boxShadow: theme.palette.mode === 'light'
                         ? '0 1px 3px rgba(0,0,0,0.08)'
                         : '0 1px 3px rgba(255,255,255,0.05)',
-                },
+                }),
             },
         },
         MuiPaper: {

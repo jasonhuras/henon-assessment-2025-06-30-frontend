@@ -1,11 +1,16 @@
-import { Grid, Typography, IconButton } from '@mui/material';
+import { Grid, Typography, IconButton, useColorScheme } from '@mui/material';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavbarProps from '../types/NavbarPropts';
 
-export default function Navbar({ toggleTheme, isDarkMode }: NavbarProps): JSX.Element {
+export default function Navbar(): JSX.Element {
     const navigate = useNavigate();
+
+    const { mode, setMode } = useColorScheme();
+
+    const toggleTheme = () => {
+        setMode(mode === 'light' ? 'dark' : 'light');
+    }
 
     return (
         <Grid container alignItems="center" justifyContent="space-between">
@@ -32,7 +37,7 @@ export default function Navbar({ toggleTheme, isDarkMode }: NavbarProps): JSX.El
                     color="inherit"
                     aria-label="toggle theme"
                 >
-                    {isDarkMode ? <DarkMode /> : <LightMode />}
+                    {mode === "dark" ? <DarkMode /> : <LightMode />}
                 </IconButton>
             </Grid>
         </Grid>

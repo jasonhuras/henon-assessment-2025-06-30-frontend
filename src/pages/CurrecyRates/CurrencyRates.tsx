@@ -1,14 +1,12 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import DashboardProps from "../../types/DashboardProps";
 import { Container, Grid } from "@mui/material";
 import CurrencySelector from "../../components/CurrencySelector";
 import CurrencyChart from "../../components/CurrencyChart";
 import CurrencyGrid from "../../components/CurrencyGrid";
 
-export default function CurrencyConversion({ toggleTheme, isDarkMode }: DashboardProps): JSX.Element {
+export default function CurrencyConversion(): JSX.Element {
     const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
-    const [loading, setLoading] = useState(false);
 
     // Initialize selected currencies from localStorage on mount
     useEffect(() => {
@@ -31,7 +29,7 @@ export default function CurrencyConversion({ toggleTheme, isDarkMode }: Dashboar
     };
     return (
         <Container>
-            <Navbar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+            <Navbar />
             <Grid container direction="column" spacing={3}>
                 <Grid>
                     <Grid container spacing={3}>
@@ -51,14 +49,12 @@ export default function CurrencyConversion({ toggleTheme, isDarkMode }: Dashboar
                         <Grid>
                             <CurrencyChart
                                 selectedCurrencies={selectedCurrencies}
-                                loading={loading}
-                                isDarkMode={isDarkMode}
                             />
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid>
-                    <CurrencyGrid selectedCurrencies={selectedCurrencies} loading={loading} isDarkMode={isDarkMode} />
+                    <CurrencyGrid selectedCurrencies={selectedCurrencies} />
                 </Grid>
             </Grid>
         </Container>

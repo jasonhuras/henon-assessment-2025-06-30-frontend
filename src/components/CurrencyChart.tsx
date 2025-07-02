@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid, Typography, useColorScheme } from '@mui/material';
 import { Chart, registerables } from 'chart.js';
 import React from 'react';
 
@@ -7,16 +7,16 @@ Chart.register(...registerables);
 
 interface CurrencyChartProps {
     selectedCurrencies: string[];
-    loading: boolean;
-    isDarkMode: boolean;
 }
 
-export default function CurrencyChart({ selectedCurrencies, loading, isDarkMode }: CurrencyChartProps) {
+export default function CurrencyChart({ selectedCurrencies }: CurrencyChartProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartRef = useRef<Chart | null>(null);
     const [chartData, setChartData] = useState<any>(null);
 
     const timeframes = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '2Y'];
+
+    const { mode } = useColorScheme();
 
     // Update chart data when selected currencies change
     useEffect(() => {
@@ -61,18 +61,18 @@ export default function CurrencyChart({ selectedCurrencies, loading, isDarkMode 
                 plugins: {
                     legend: {
                         labels: {
-                            color: isDarkMode ? '#fff' : '#000'
+                            color: mode === "dark" ? '#fff' : '#000'
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: isDarkMode ? '#fff' : '#000' },
-                        grid: { color: isDarkMode ? '#333' : '#ddd' }
+                        ticks: { color: mode === "dark" ? '#fff' : '#000' },
+                        grid: { color: mode === "dark" ? '#333' : '#ddd' }
                     },
                     y: {
-                        ticks: { color: isDarkMode ? '#fff' : '#000' },
-                        grid: { color: isDarkMode ? '#333' : '#ddd' }
+                        ticks: { color: mode === "dark" ? '#fff' : '#000' },
+                        grid: { color: mode === "dark" ? '#333' : '#ddd' }
                     }
                 }
             }
@@ -83,7 +83,7 @@ export default function CurrencyChart({ selectedCurrencies, loading, isDarkMode 
                 chartRef.current.destroy();
             }
         };
-    }, [chartData, isDarkMode]);
+    }, [chartData, mode]);
 
     if (!chartData) {
         return (

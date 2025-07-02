@@ -9,11 +9,9 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface CurrencyGridProps {
     selectedCurrencies: string[];
-    loading: boolean;
-    isDarkMode: boolean;
 }
 
-export default function CurrencyGrid({ selectedCurrencies, loading, isDarkMode }: CurrencyGridProps) {
+export default function CurrencyGrid({ selectedCurrencies }: CurrencyGridProps) {
 
     const [rowData, setRowData] = useState([
         { make: "Tesla", model: "Model Y", price: 64950, electric: true },

@@ -1,4 +1,4 @@
-import { Grid, Typography, IconButton, useColorScheme } from '@mui/material';
+import { Grid, Typography, IconButton, useColorScheme, Box } from '@mui/material';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -34,10 +34,15 @@ export default function Navbar(): JSX.Element {
             <Grid >
                 <IconButton
                     onClick={toggleTheme}
-                    color="inherit"
+                    sx={{
+                        color: 'text.primary',
+                        '&:hover': {
+                            bgcolor: 'action.hover'
+                        }
+                    }}
                     aria-label="toggle theme"
                 >
-                    {mode === "dark" ? <DarkMode /> : <LightMode />}
+                    {mode === "dark" ? <LightMode /> : <DarkMode />}
                 </IconButton>
             </Grid>
         </Grid>

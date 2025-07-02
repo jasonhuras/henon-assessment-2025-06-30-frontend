@@ -1,6 +1,6 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Box } from "@mui/material";
 import CurrencySelector from "../../components/CurrencySelector";
 import CurrencyChart from "../../components/CurrencyChart";
 import CurrencyGrid from "../../components/CurrencyGrid";

@@ -53,36 +53,5 @@ export const theme = createTheme({
             fontSize: '1rem',
             lineHeight: 1.6,
         },
-    },
-    spacing: 8,
-    shape: {
-        borderRadius: 12,
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    borderRadius: 8,
-                },
-            },
-        },
-        MuiCard: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    boxShadow: theme.palette.mode === 'light'
-                        ? '0 1px 3px rgba(0,0,0,0.08)'
-                        : '0 1px 3px rgba(255,255,255,0.05)',
-                }),
-            },
-        },
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    backgroundImage: 'none',
-                },
-            },
-        },
-    },
+    }
 });

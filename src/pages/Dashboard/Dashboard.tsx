@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import Navbar from "../../components/Navbar";
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
 
 export default function Dashboard(): JSX.Element {
     return (

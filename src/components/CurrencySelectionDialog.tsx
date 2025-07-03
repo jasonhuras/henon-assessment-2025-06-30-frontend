@@ -12,16 +12,22 @@ import {
     Paper,
     FormControlLabel,
     Checkbox,
-    CircularProgress,
     Pagination,
     TextField,
     InputAdornment
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import CurrencySelectionDialogProps from '../types/CurrencySelectionDialogPropts';
 import Currency from '../types/Currency';
 
 const ITEMS_PER_PAGE = 10;
+
+interface CurrencySelectionDialogProps {
+    open: boolean;
+    onClose: () => void;
+    currencies: Currency[];
+    selectedCurrencies: string[];
+    onCurrencyToggle: (currencyCode: string, isSelected: boolean) => void;
+}
 
 export default function CurrencySelectionDialog({
     open,
@@ -34,7 +40,6 @@ export default function CurrencySelectionDialog({
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCurrencies, setFilteredCurrencies] = useState<Currency[]>([]);
 
-    // Filter and sort currencies based on search term and selection
     useEffect(() => {
         let filtered = currencies;
 
@@ -47,22 +52,22 @@ export default function CurrencySelectionDialog({
             );
         }
 
-        // Sort: selected currencies first, then alphabetically
+        // selected currencies first, then alphabetically
         const sorted = [...filtered].sort((a, b) => {
             const aSelected = selectedCurrencies.includes(a.code);
             const bSelected = selectedCurrencies.includes(b.code);
 
-            // If selection status is different, selected comes first
+            // selected comes first
             if (aSelected !== bSelected) {
                 return aSelected ? -1 : 1;
             }
 
-            // If both have same selection status, sort alphabetically by code
+            // thensort alphabetically by code
             return a.code.localeCompare(b.code);
         });
 
         setFilteredCurrencies(sorted);
-        setCurrentPage(1); // Reset to first page when search changes
+        setCurrentPage(1);
     }, [currencies, searchTerm, selectedCurrencies]);
 
     // pagination
@@ -98,7 +103,6 @@ export default function CurrencySelectionDialog({
             <Divider />
             <DialogContent sx={{ py: 2 }}>
                 <Box>
-                    {/* Search Bar */}
                     <Box sx={{ mb: 3 }}>
                         <TextField
                             fullWidth
@@ -118,13 +122,11 @@ export default function CurrencySelectionDialog({
                         />
                     </Box>
 
-                    {/* Currency Count */}
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {filteredCurrencies.length} currency pairs available
                         {searchTerm && ` (filtered from ${currencies.length})`}
                     </Typography>
 
-                    {/* Currency List */}
                     {paginatedCurrencies.length > 0 ? (
                         <Grid container spacing={1}>
                             {paginatedCurrencies.map((currency, index) => (
@@ -190,7 +192,6 @@ export default function CurrencySelectionDialog({
                         </Box>
                     )}
 
-                    {/* Pagination */}
                     {totalPages > 1 && (
                         <Box display="flex" justifyContent="center" sx={{ mt: 3 }}>
                             <Pagination

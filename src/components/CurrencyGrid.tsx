@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback, StrictMode } from 'react';
-import { Typography, Box, useColorScheme, Paper, useTheme } from '@mui/material';
-import { AllCommunityModule, ModuleRegistry, colorSchemeLightWarm, colorSchemeDarkWarm, themeMaterial } from 'ag-grid-community';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useColorScheme, Paper, useTheme, Box, Typography } from '@mui/material';
+import { AllCommunityModule, ModuleRegistry, themeMaterial } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import CurrencyData from '../types/CurrencyData';
 
@@ -20,12 +20,14 @@ interface FlattenedCurrencyData {
     rateChangePercent?: number;
 }
 
+const GRID_STATE_KEY = 'currency-grid-state';
+
 export default function CurrencyGrid({ currencyData, loading, setLoading }: CurrencyGridProps) {
     const { mode } = useColorScheme();
     const MUItheme = useTheme();
+    const gridRef = useRef<AgGridReact>(null);
 
     const rowData = useMemo(() => {
-        setLoading(true);
         const flattened: FlattenedCurrencyData[] = [];
 
         currencyData.forEach(currency => {
@@ -49,10 +51,76 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
                 });
             });
         });
-        setLoading(false);
         return flattened.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    }, [currencyData, setLoading]);
+    }, [currencyData]);
 
+    // Save grid state to localStorage
+    const saveGridState = useCallback(() => {
+        if (!gridRef.current?.api) return;
+
+        const gridState = {
+            columnState: gridRef.current.api.getColumnState(),
+            filterModel: gridRef.current.api.getFilterModel(),
+        };
+
+        try {
+            localStorage.setItem(GRID_STATE_KEY, JSON.stringify(gridState));
+        } catch (error) {
+            console.warn('Failed to save grid state:', error);
+        }
+    }, []);
+
+    // Load grid state from localStorage
+    const loadGridState = useCallback(() => {
+        if (!gridRef.current?.api) return;
+
+        try {
+            const savedState = localStorage.getItem(GRID_STATE_KEY);
+            if (!savedState) return;
+
+            const gridState = JSON.parse(savedState);
+
+            if (gridState.columnState) {
+                gridRef.current.api.applyColumnState({
+                    state: gridState.columnState,
+                    applyOrder: true,
+                });
+            }
+
+            if (gridState.filterModel) {
+                gridRef.current.api.setFilterModel(gridState.filterModel);
+            }
+
+        } catch (error) {
+            console.warn('Failed to load grid state:', error);
+        }
+    }, []);
+
+
+    // Event handlers for state persistence
+    const onGridReady = useCallback(() => {
+        loadGridState();
+    }, [loadGridState]);
+
+    const onFilterChanged = useCallback(() => {
+        saveGridState();
+    }, [saveGridState]);
+
+    const onSortChanged = useCallback(() => {
+        saveGridState();
+    }, [saveGridState]);
+
+    const onColumnResized = useCallback(() => {
+        saveGridState();
+    }, [saveGridState]);
+
+    const onColumnMoved = useCallback(() => {
+        saveGridState();
+    }, [saveGridState]);
+
+    const onColumnVisible = useCallback(() => {
+        saveGridState();
+    }, [saveGridState]);
 
     const columnDefs = [
         {
@@ -86,9 +154,6 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
         flex: 1,
         minWidth: 100,
         filter: true,
-        enableValue: true,
-        enableRowGroup: true,
-        enablePivot: true,
     };
 
     const theme = themeMaterial
@@ -118,22 +183,33 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
         document.body.dataset.agThemeMode = mode;
     }, [mode]);
 
+    if (currencyData.length === 0) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height={500}>
+                <Typography>Select a currency to view data grid</Typography>
+            </Box>
+        );
+    }
+
     return (
         <Paper elevation={20}>
             <div style={{ width: "100%", height: "500px" }}>
                 <AgGridReact
+                    ref={gridRef}
                     theme={theme}
                     columnDefs={columnDefs}
                     rowData={rowData}
                     defaultColDef={defaultColDef}
                     loading={loading}
-                    rowSelection="multiple"
-                    cellSelection={true}
-                    enableCharts={true}
-                    animateRows={true}
                     pagination={true}
                     paginationPageSize={20}
-                    paginationPageSizeSelector={[25, 50, 100, 200]}
+                    paginationPageSizeSelector={[20, 50, 100, 200]}
+                    onGridReady={onGridReady}
+                    onFilterChanged={onFilterChanged}
+                    onSortChanged={onSortChanged}
+                    onColumnResized={onColumnResized}
+                    onColumnMoved={onColumnMoved}
+                    onColumnVisible={onColumnVisible}
                 />
             </div>
         </Paper>

@@ -1,10 +1,10 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, Box, Typography, Button, Fade, Slide } from "@mui/material";
+import { Container, Box, Typography, Button, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ArrowForward, TrendingUp } from "@mui/icons-material";
 
-export default function Dashboard(): JSX.Element {
+export default function Homepage(): JSX.Element {
     const navigate = useNavigate();
     const [displayText, setDisplayText] = useState("");
     const [showSubtitle, setShowSubtitle] = useState(false);
@@ -24,7 +24,7 @@ export default function Dashboard(): JSX.Element {
                 setTimeout(() => setShowSubtitle(true), 500);
                 setTimeout(() => setShowButton(true), 1000);
             }
-        }, 50);
+        }, 30);
 
         return () => clearInterval(typingInterval);
     }, []);
@@ -93,7 +93,7 @@ export default function Dashboard(): JSX.Element {
                         <Button
                             variant="contained"
                             size="large"
-                            onClick={() => navigate('/convert-currency')}
+                            onClick={() => navigate('/currency-exchange-rates')}
                             endIcon={<ArrowForward />}
                             startIcon={<TrendingUp />}
                             sx={{

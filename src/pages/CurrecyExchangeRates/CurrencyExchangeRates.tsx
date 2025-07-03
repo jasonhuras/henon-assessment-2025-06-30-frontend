@@ -6,16 +6,19 @@ import CurrencyGrid from "../../components/CurrencyGrid";
 import CurrencySelectionDialog from "../../components/CurrencySelectionDialog";
 import { ExchangeRateService } from "../../services/exchangeRateService";
 import CurrencyData from "../../types/CurrencyData";
+import { SsidChart, TableView } from "@mui/icons-material";
 
 const timeframes = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '2Y'] as const;
 type Timeframe = typeof timeframes[number];
 
-export default function CurrencyConversion(): JSX.Element {
+export default function CurrencyExchangeRates(): JSX.Element {
     const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
     const [availableCurrencies, setAvailableCurrencies] = useState<{ code: string; name: string; }[]>([]);
-    const [availableCurrenciesLoading, setAvailableCurrenciesLoading] = useState(false);
-    const [currencyDataLoading, setCurrencyDataLoading] = useState(false);
+    const [availableCurrenciesLoading, setAvailableCurrenciesLoading] = useState(true);
+
     const [currencyData, setCurrencyData] = useState<CurrencyData[]>([])
+    const [currencyDataLoading, setCurrencyDataLoading] = useState(true);
+
     const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe>('1M');
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
@@ -67,6 +70,13 @@ export default function CurrencyConversion(): JSX.Element {
         }
     }, []);
 
+    useEffect(() => {
+        const savedTimeframe = localStorage.getItem('currency_timeframe') as Timeframe;
+        if (savedTimeframe !== null) {
+            setSelectedTimeframe(savedTimeframe);
+        }
+    }, []);
+
     const loadCurrencyRatesData = async (selectedTimeframe: Timeframe) => {
         setCurrencyDataLoading(true);
         try {
@@ -89,7 +99,6 @@ export default function CurrencyConversion(): JSX.Element {
             const combinedCurrencyData = responses[0].flatMap(response => response.data);
 
             setCurrencyData(combinedCurrencyData);
-            console.log(combinedCurrencyData)
         } catch (error) {
             console.error('Failed to fetch currency data:', error);
         } finally {
@@ -140,6 +149,7 @@ export default function CurrencyConversion(): JSX.Element {
     };
 
     const handleTimeframeClick = (timeframe: Timeframe) => {
+        localStorage.setItem('currency_timeframe', timeframe);
         setSelectedTimeframe(timeframe);
     };
 
@@ -151,8 +161,8 @@ export default function CurrencyConversion(): JSX.Element {
                     <Grid container justifyContent="space-between" alignItems="center" sx={{ pb: 1 }} spacing={1}>
                         <Grid>
                             <Tabs value={tabValue} onChange={handleTabChange} aria-label="currency data tabs">
-                                <Tab label="Graph" />
-                                <Tab label="Data Grid" />
+                                <Tab icon={<SsidChart />} label="Graph" />
+                                <Tab icon={<TableView />} label="Data Grid" />
                             </Tabs>
                         </Grid>
                         <Grid>
@@ -161,8 +171,9 @@ export default function CurrencyConversion(): JSX.Element {
                                     <Grid>
                                         <Typography
                                             variant="overline"
-                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 } }}
+                                            sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 }, textDecoration: selectedTimeframe === label ? 'underline' : 'none' }}
                                             onClick={() => handleTimeframeClick(label)}
+
                                         >
                                             {label}
                                         </Typography>
@@ -183,7 +194,7 @@ export default function CurrencyConversion(): JSX.Element {
                         </Grid>
 
                     </Grid>
-                    <Grid sx={{ mt: 2 }}>
+                    <Grid>
                         {tabValue === 0 && (
                             <CurrencyChart currencyData={currencyData} loading={currencyDataLoading} setLoading={setCurrencyDataLoading} />
                         )}

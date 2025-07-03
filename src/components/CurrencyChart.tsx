@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Divider, Grid, Typography, useColorScheme, Skeleton, CircularProgress, Paper } from '@mui/material';
+import { Box, Typography, useColorScheme, CircularProgress, Paper, useTheme } from '@mui/material';
 import { Chart, registerables } from 'chart.js';
-import React from 'react';
 import CurrencyData from '../types/CurrencyData';
+import chroma from 'chroma-js';
 
 Chart.register(...registerables);
 
@@ -16,6 +16,7 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartRef = useRef<Chart | null>(null);
     const [chartData, setChartData] = useState<any>(null);
+    const MUItheme = useTheme();
 
     const { mode } = useColorScheme();
 
@@ -29,11 +30,11 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
 
         setLoading(true);
 
-        // Generate colors for each currency
-        const colors = [
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57',
-            '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43'
-        ];
+        const baseColor = MUItheme.palette.primary.main;
+        const colors = chroma.scale([
+            baseColor,
+            chroma(baseColor).set('hsl.h', '+180') // opposite on color wheel
+        ]).mode('hsl').colors(Math.min(currencyData.length, 10));
 
         const allDates = Array.from(new Set(
             currencyData.flatMap(currency => currency.rates.map(rate => rate.date))
@@ -64,7 +65,7 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
         });
 
         setLoading(false);
-    }, [currencyData, setLoading]);
+    }, [MUItheme.palette.primary.main, currencyData, setLoading]);
 
     useEffect(() => {
         if (!canvasRef.current || !chartData) return;
@@ -145,19 +146,17 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
     // Show message when no data
     if (!chartData || currencyData.length === 0) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" height={400}>
-                <Typography>Select currencies to view chart</Typography>
+            <Box display="flex" justifyContent="center" alignItems="center" height={500}>
+                <Typography>Select currency to view chart</Typography>
             </Box>
         );
     }
 
     return (
-        <Grid container direction="column">
-            <Grid>
-                <Box sx={{ height: 400, width: '100%' }}>
-                    <canvas ref={canvasRef} />
-                </Box>
-            </Grid>
-        </Grid>
+        <Paper elevation={mode === "dark" ? 0 : 20}>
+            <Box sx={{ height: 500, width: '100%', p: 3 }}>
+                <canvas ref={canvasRef} />
+            </Box>
+        </Paper>
     );
 }

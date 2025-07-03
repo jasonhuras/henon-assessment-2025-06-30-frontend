@@ -40,7 +40,7 @@ export default function Navbar(): JSX.Element {
                     <Grid>
                         <Typography
                             variant="button"
-                            onClick={() => navigate('/convert-currency')}
+                            onClick={() => navigate('/currency-exchange-rates')}
                             sx={{
                                 cursor: 'pointer',
                                 '&:hover': { opacity: 0.7 },

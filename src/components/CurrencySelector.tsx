@@ -1,7 +1,10 @@
 import { Button } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 import { useState, useEffect } from "react";
-import CurrencySelectorProps from "../types/CurrencySelectorPropts";
+interface CurrencySelectorProps {
+    currencyCode: 'USD' | 'CAD' | 'EUR';
+    onToggle: (currencyCode: string, isSelected: boolean) => void;
+}
 
 export default function CurrencySelector({ currencyCode, onToggle }: CurrencySelectorProps) {
     const [isSelected, setIsSelected] = useState<boolean>(false);

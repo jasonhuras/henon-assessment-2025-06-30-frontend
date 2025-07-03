@@ -1,11 +1,11 @@
-import React, { JSX, useState } from 'react';
+import { JSX } from 'react';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './themes/theme';
-import Dashboard from './pages/Dashboard/Dashboard';
-import CurrencyRates from './pages/CurrecyRates/CurrencyRates';
+import CurrencyExchangeRates from './pages/CurrecyExchangeRates/CurrencyExchangeRates';
+import Homepage from './pages/Homepage/Homepage';
 
 function App(): JSX.Element {
   return (
@@ -15,11 +15,11 @@ function App(): JSX.Element {
         <Routes>
           <Route
             path="/"
-            element={<Dashboard />}
+            element={<Homepage />}
           />
           <Route
-            path="/convert-currency"
-            element={<CurrencyRates />}
+            path="/currency-exchange-rates"
+            element={<CurrencyExchangeRates />}
           />
         </Routes>
       </BrowserRouter>

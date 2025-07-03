@@ -34,9 +34,10 @@ export const theme = createTheme({
                 },
                 divider: '#333333',
             },
+
         },
+
     },
-    // Shared configuration for both themes
     typography: {
         fontFamily: '"Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, sans-serif',
         h1: {

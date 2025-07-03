@@ -1,6 +1,6 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, Box, Typography, Button, Fade } from "@mui/material";
+import { Container, Box, Typography, Button, Fade, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ArrowForward, TrendingUp } from "@mui/icons-material";
 
@@ -9,6 +9,9 @@ export default function Homepage(): JSX.Element {
     const [displayText, setDisplayText] = useState("");
     const [showSubtitle, setShowSubtitle] = useState(false);
     const [showButton, setShowButton] = useState(false);
+
+    const MUItheme = useTheme();
+
 
     const fullText = "Welcome to Currency Exchange Analytics";
     const subtitle = "Built by Jason Huras";
@@ -49,7 +52,7 @@ export default function Homepage(): JSX.Element {
                         component="h1"
                         sx={{
                             fontWeight: 700,
-                            background: 'linear-gradient(45deg, #99C33C 30%, #7BA428 90%)',
+                            background: `linear-gradient(45deg, ${MUItheme.palette.primary.main} 30%, ${MUItheme.palette.primary.dark} 90%)`,
                             backgroundClip: 'text',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',

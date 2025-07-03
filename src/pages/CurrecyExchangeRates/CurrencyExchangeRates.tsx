@@ -1,12 +1,13 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, Grid, Tabs, Tab, Button, Typography, Paper, Box, Chip, useTheme } from "@mui/material";
+import { Container, Grid, Tabs, Tab, Typography } from "@mui/material";
 import CurrencyChart from "../../components/CurrencyChart";
 import CurrencyGrid from "../../components/CurrencyGrid";
 import CurrencySelectionDialog from "../../components/CurrencySelectionDialog";
 import { ExchangeRateService } from "../../services/exchangeRateService";
 import CurrencyData from "../../types/CurrencyData";
-import { SsidChart, TableView, TuneRounded, CurrencyExchange } from "@mui/icons-material";
+import { SsidChart, TableView } from "@mui/icons-material";
+import SelectCurrenciesButton from "../../components/SelectCurrenciesButton";
 
 const timeframes = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '2Y'] as const;
 type Timeframe = typeof timeframes[number];
@@ -182,103 +183,7 @@ export default function CurrencyExchangeRates(): JSX.Element {
                             </Grid>
                         </Grid>
                         <Grid>
-                            {availableCurrenciesLoading ? (
-                                <Paper 
-                                    elevation={0}
-                                    sx={{
-                                        px: 2.5,
-                                        py: 1.5,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        borderRadius: 2,
-                                        backgroundColor: 'action.hover',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1,
-                                        cursor: 'not-allowed',
-                                        opacity: 0.6
-                                    }}
-                                >
-                                    <CurrencyExchange sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                        Loading currencies...
-                                    </Typography>
-                                </Paper>
-                            ) : (
-                                <Paper 
-                                    elevation={0}
-                                    component={Button}
-                                    onClick={handleDialogOpen}
-                                    sx={{
-                                        px: 2.5,
-                                        py: 1.5,
-                                        border: '1px solid',
-                                        borderColor: 'primary.main',
-                                        borderRadius: 2,
-                                        backgroundColor: 'background.paper',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1.5,
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        textTransform: 'none',
-                                        '&:hover': {
-                                            backgroundColor: 'primary.main',
-                                            borderColor: 'primary.main',
-                                            transform: 'translateY(-1px)',
-                                            boxShadow: '0 4px 12px rgba(153, 195, 60, 0.25)',
-                                            '& .currency-icon': {
-                                                color: 'white'
-                                            },
-                                            '& .currency-text': {
-                                                color: 'white'
-                                            },
-                                            '& .currency-chip': {
-                                                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                                color: 'white'
-                                            }
-                                        }
-                                    }}
-                                >
-                                    <TuneRounded 
-                                        className="currency-icon"
-                                        sx={{ 
-                                            fontSize: 18, 
-                                            color: 'primary.main',
-                                            transition: 'color 0.2s ease'
-                                        }} 
-                                    />
-                                    <Typography 
-                                        className="currency-text"
-                                        variant="body2" 
-                                        sx={{ 
-                                            fontWeight: 600,
-                                            color: 'text.primary',
-                                            transition: 'color 0.2s ease'
-                                        }}
-                                    >
-                                        Select Currencies
-                                    </Typography>
-                                    {selectedCurrencies.length > 0 && (
-                                        <Chip 
-                                            className="currency-chip"
-                                            label={selectedCurrencies.length}
-                                            size="small"
-                                            sx={{
-                                                height: 20,
-                                                fontSize: '0.75rem',
-                                                fontWeight: 600,
-                                                backgroundColor: 'primary.main',
-                                                color: 'white',
-                                                transition: 'all 0.2s ease',
-                                                '& .MuiChip-label': {
-                                                    px: 1
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                </Paper>
-                            )}
+                            <SelectCurrenciesButton handleDialogOpen={handleDialogOpen} length={selectedCurrencies.length} loading={availableCurrenciesLoading} />
                         </Grid>
 
                     </Grid>

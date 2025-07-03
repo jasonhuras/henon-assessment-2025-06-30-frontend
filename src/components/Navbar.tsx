@@ -1,7 +1,8 @@
-import { Grid, Typography, IconButton, useColorScheme } from '@mui/material';
+import { Grid, Typography, IconButton, useColorScheme, Tooltip } from '@mui/material';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ColorWheel from './ColorWheel';
 
 export default function Navbar(): JSX.Element {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Navbar(): JSX.Element {
                     Henon Assessment
                 </Typography>
             </Grid>
-            <Grid size={{ xs: 11, md: 7 }}>
+            <Grid size={{ xs: 10, md: 6 }}>
                 <Grid container spacing={4} alignItems="center">
                     <Grid>
                         <Typography
@@ -53,19 +54,28 @@ export default function Navbar(): JSX.Element {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid size={{ xs: 1, md: 1 }}>
-                <IconButton
-                    onClick={toggleTheme}
-                    sx={{
-                        color: 'text.primary',
-                        '&:hover': {
-                            bgcolor: 'action.hover'
-                        }
-                    }}
-                    aria-label="toggle theme"
-                >
-                    {mode === "dark" ? <LightMode /> : <DarkMode />}
-                </IconButton>
+            <Grid size={{ xs: 2, md: 2 }}>
+                <Grid container spacing={0.5} justifyContent="flex-end">
+                    <Grid>
+                        <ColorWheel />
+                    </Grid>
+                    <Grid>
+                        <Tooltip title="Switch dark/light mode" arrow>
+                            <IconButton
+                                onClick={toggleTheme}
+                                sx={{
+                                    color: 'text.primary',
+                                    '&:hover': {
+                                        bgcolor: 'action.hover'
+                                    }
+                                }}
+                                aria-label="toggle theme"
+                            >
+                                {mode === "dark" ? <LightMode /> : <DarkMode />}
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );

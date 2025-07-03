@@ -1,15 +1,14 @@
 import { JSX } from 'react';
 import './App.css';
-import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import { theme } from './themes/theme';
+import { DynamicThemeProvider } from './themes/ThemeContext';
 import CurrencyExchangeRates from './pages/CurrecyExchangeRates/CurrencyExchangeRates';
 import Homepage from './pages/Homepage/Homepage';
 
 function App(): JSX.Element {
   return (
-    <ThemeProvider theme={theme}>
+    <DynamicThemeProvider>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
@@ -23,7 +22,7 @@ function App(): JSX.Element {
           />
         </Routes>
       </BrowserRouter>
-    </ThemeProvider>
+    </DynamicThemeProvider>
   );
 }
 

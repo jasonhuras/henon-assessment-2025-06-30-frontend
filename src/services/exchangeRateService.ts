@@ -20,7 +20,7 @@ export interface SupportedCurrenciesResponse {
   }
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export class ExchangeRateService {
@@ -29,7 +29,7 @@ export class ExchangeRateService {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    console.log(API_KEY)
+
     if (API_KEY) {
       headers['X-API-Key'] = API_KEY;
     }

@@ -21,8 +21,21 @@ export interface SupportedCurrenciesResponse {
 }
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 export class ExchangeRateService {
+
+  private static getHeaders() {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    console.log(API_KEY)
+    if (API_KEY) {
+      headers['X-API-Key'] = API_KEY;
+    }
+
+    return headers;
+  }
   static async getExchangeRates(params: ExchangeRateRequest): Promise<ExchangeRateResponse> {
     const queryParams = new URLSearchParams({
       base_currency_code: params.base_currency_code,
@@ -31,7 +44,9 @@ export class ExchangeRateService {
       end_date: params.end_date.toDateString(),
     });
 
-    const response = await fetch(`${API_BASE_URL}/exchange-rates/?${queryParams}`);
+    const response = await fetch(`${API_BASE_URL}/exchange-rates/?${queryParams}`, {
+      headers: this.getHeaders(),
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch exchange rates: ${response.statusText}`);
@@ -41,7 +56,9 @@ export class ExchangeRateService {
   }
 
   static async getSupportedCurrencies(): Promise<SupportedCurrenciesResponse> {
-    const response = await fetch(`${API_BASE_URL}/supported-currencies/`);
+    const response = await fetch(`${API_BASE_URL}/supported-currencies/`, {
+      headers: this.getHeaders(),
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch supported currencies: ${response.statusText}`);

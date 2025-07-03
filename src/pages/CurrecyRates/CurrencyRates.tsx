@@ -60,6 +60,13 @@ export default function CurrencyConversion(): JSX.Element {
         }
     }, [selectedTimeframe, initialLoadComplete]);
 
+    useEffect(() => {
+        const savedTab = localStorage.getItem('currency_tab_selection');
+        if (savedTab !== null) {
+            setTabValue(parseInt(savedTab));
+        }
+    }, []);
+
     const loadCurrencyRatesData = async (selectedTimeframe: Timeframe) => {
         setCurrencyDataLoading(true);
         try {
@@ -119,6 +126,7 @@ export default function CurrencyConversion(): JSX.Element {
     };
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        localStorage.setItem('currency_tab_selection', newValue.toString());
         setTabValue(newValue);
     };
 
@@ -180,7 +188,7 @@ export default function CurrencyConversion(): JSX.Element {
                             <CurrencyChart currencyData={currencyData} loading={currencyDataLoading} setLoading={setCurrencyDataLoading} />
                         )}
                         {tabValue === 1 && (
-                            <CurrencyGrid currencyData={currencyData} loading={currencyDataLoading} setLoading={setCurrencyDataLoading}/>
+                            <CurrencyGrid currencyData={currencyData} loading={currencyDataLoading} setLoading={setCurrencyDataLoading} />
                         )}
                     </Grid>
                 </Grid>

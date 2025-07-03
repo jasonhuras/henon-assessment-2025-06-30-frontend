@@ -49,7 +49,7 @@ export default function Navbar(): JSX.Element {
                                 fontWeight: 500
                             }}
                         >
-                            Currency Rates
+                            Currency Exchange Rates
                         </Typography>
                     </Grid>
                 </Grid>

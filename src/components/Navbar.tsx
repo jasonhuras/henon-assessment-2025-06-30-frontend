@@ -1,11 +1,12 @@
 import { Grid, Typography, IconButton, useColorScheme, Tooltip } from '@mui/material';
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { JSX } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ColorWheel from './ColorWheel';
 
 export default function Navbar(): JSX.Element {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const { mode, setMode } = useColorScheme();
 
@@ -32,7 +33,11 @@ export default function Navbar(): JSX.Element {
                                 cursor: 'pointer',
                                 '&:hover': { opacity: 0.7 },
                                 textTransform: 'none',
-                                fontWeight: 500
+                                fontWeight: 500,
+                                textDecoration: location.pathname === '/' ? 'underline' : 'none',
+                                textDecorationColor: 'primary.main',
+                                textUnderlineOffset: '4px',
+                                color: location.pathname === '/' ? 'primary.main' : 'text.primary'
                             }}
                         >
                             Home
@@ -46,7 +51,11 @@ export default function Navbar(): JSX.Element {
                                 cursor: 'pointer',
                                 '&:hover': { opacity: 0.7 },
                                 textTransform: 'none',
-                                fontWeight: 500
+                                fontWeight: 500,
+                                textDecoration: location.pathname === '/currency-exchange-rates' ? 'underline' : 'none',
+                                textDecorationColor: 'primary.main',
+                                textUnderlineOffset: '4px',
+                                color: location.pathname === '/currency-exchange-rates' ? 'primary.main' : 'text.primary'
                             }}
                         >
                             Currency Exchange Rates

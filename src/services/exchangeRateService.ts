@@ -45,6 +45,7 @@ export class ExchangeRateService {
     });
 
     const response = await fetch(`${API_BASE_URL}/exchange-rates/?${queryParams}`, {
+      method: 'GET',
       headers: this.getHeaders(),
     });
 
@@ -57,6 +58,7 @@ export class ExchangeRateService {
 
   static async getSupportedCurrencies(): Promise<SupportedCurrenciesResponse> {
     const response = await fetch(`${API_BASE_URL}/supported-currencies/`, {
+      method: 'GET',
       headers: this.getHeaders(),
     });
 

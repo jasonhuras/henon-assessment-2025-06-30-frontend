@@ -183,7 +183,7 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
         document.body.dataset.agThemeMode = mode;
     }, [mode]);
 
-    if (currencyData.length === 0) {
+    if (currencyData.length === 0 && !loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height={500}>
                 <Typography>Select a currency to view data grid</Typography>
@@ -200,6 +200,9 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
                     columnDefs={columnDefs}
                     rowData={rowData}
                     defaultColDef={defaultColDef}
+                    gridOptions={{
+                        rowHeight: 30
+                    }}
                     loading={loading}
                     pagination={true}
                     paginationPageSize={20}

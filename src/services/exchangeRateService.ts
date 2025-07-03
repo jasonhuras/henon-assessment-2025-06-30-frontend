@@ -1,3 +1,5 @@
+import CurrencyData from "../types/CurrencyData";
+
 export interface ExchangeRateRequest {
   base_currency_code: string;
   target_currency_code: string;
@@ -6,10 +8,7 @@ export interface ExchangeRateRequest {
 }
 
 export interface ExchangeRateResponse {
-  rates: Array<{
-    date: string;
-    rate: number;
-  }>;
+  data: Array<CurrencyData>;
 }
 
 export interface SupportedCurrenciesResponse {

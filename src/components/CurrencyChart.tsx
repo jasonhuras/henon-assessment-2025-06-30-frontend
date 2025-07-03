@@ -1,50 +1,74 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Divider, Grid, Typography, useColorScheme } from '@mui/material';
+import { Box, Divider, Grid, Typography, useColorScheme, Skeleton, CircularProgress, Paper } from '@mui/material';
 import { Chart, registerables } from 'chart.js';
 import React from 'react';
+import CurrencyData from '../types/CurrencyData';
 
 Chart.register(...registerables);
 
 interface CurrencyChartProps {
-    selectedCurrencies: string[];
+    currencyData: Array<CurrencyData>;
+    loading: boolean;
+    setLoading: (loading: boolean) => void;
 }
 
-export default function CurrencyChart({ selectedCurrencies }: CurrencyChartProps) {
+export default function CurrencyChart({ currencyData, loading, setLoading }: CurrencyChartProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartRef = useRef<Chart | null>(null);
     const [chartData, setChartData] = useState<any>(null);
 
-    const timeframes = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '2Y'];
-
     const { mode } = useColorScheme();
 
-    // Update chart data when selected currencies change
+    // Process currency data into chart format
     useEffect(() => {
-        if (selectedCurrencies.length === 0) {
+
+        if (!currencyData || currencyData.length === 0) {
             setChartData(null);
             return;
         }
 
-        // TODO: Replace with actual data fetching
-        const mockData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: selectedCurrencies.map((currency, index) => ({
-                label: currency,
-                data: [65, 59, 80, 81, 56, 55], // Placeholder data
-                borderColor: ['#2196f3', '#4caf50', '#ff9800'][index],
-                backgroundColor: ['#2196f3', '#4caf50', '#ff9800'][index] + '20',
-                tension: 0.4
-            }))
-        };
+        setLoading(true);
 
-        setChartData(mockData);
-    }, [selectedCurrencies]);
+        // Generate colors for each currency
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57',
+            '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43'
+        ];
 
-    // Create/update chart when data changes
+        const allDates = Array.from(new Set(
+            currencyData.flatMap(currency => currency.rates.map(rate => rate.date))
+        )).sort();
+
+        const datasets = currencyData.map((currency, index) => {
+            const data = allDates.map(date => {
+                const rateData = currency.rates.find(r => r.date === date);
+                return rateData ? parseFloat(rateData.rate) : null;
+            });
+
+            return {
+                label: currency.code,
+                data: data,
+                borderColor: colors[index % colors.length],
+                backgroundColor: colors[index % colors.length] + '20',
+                fill: false,
+                tension: 0.1,
+                pointRadius: 0.5,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            };
+        });
+
+        setChartData({
+            labels: allDates,
+            datasets: datasets
+        });
+
+        setLoading(false);
+    }, [currencyData, setLoading]);
+
     useEffect(() => {
         if (!canvasRef.current || !chartData) return;
 
-        // Destroy existing chart
         if (chartRef.current) {
             chartRef.current.destroy();
         }
@@ -63,17 +87,36 @@ export default function CurrencyChart({ selectedCurrencies }: CurrencyChartProps
                         labels: {
                             color: mode === "dark" ? '#fff' : '#000'
                         }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
                     }
                 },
                 scales: {
                     x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            color: mode === "dark" ? '#fff' : '#000'
+                        },
                         ticks: { color: mode === "dark" ? '#fff' : '#000' },
                         grid: { color: mode === "dark" ? '#333' : '#ddd' }
                     },
                     y: {
+                        title: {
+                            display: true,
+                            text: 'Exchange Rate',
+                            color: mode === "dark" ? '#fff' : '#000'
+                        },
                         ticks: { color: mode === "dark" ? '#fff' : '#000' },
                         grid: { color: mode === "dark" ? '#333' : '#ddd' }
                     }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
                 }
             }
         });
@@ -85,7 +128,22 @@ export default function CurrencyChart({ selectedCurrencies }: CurrencyChartProps
         };
     }, [chartData, mode]);
 
-    if (!chartData) {
+    if (loading) {
+        return (
+            <Box sx={{
+                width: '100%',
+                height: 400,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    // Show message when no data
+    if (!chartData || currencyData.length === 0) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height={400}>
                 <Typography>Select currencies to view chart</Typography>
@@ -93,33 +151,13 @@ export default function CurrencyChart({ selectedCurrencies }: CurrencyChartProps
         );
     }
 
-    const handleClick = (timeframe: string) => {
-        console.log(timeframe)
-    };
-
     return (
         <Grid container direction="column">
             <Grid>
-                <canvas ref={canvasRef} />
+                <Box sx={{ height: 400, width: '100%' }}>
+                    <canvas ref={canvasRef} />
+                </Box>
             </Grid>
-            <Grid>
-                <Grid container spacing={3}>
-                    {timeframes.map((label, index) => (
-                        <Grid>
-                            <Typography
-                                variant="overline"
-                                sx={{ cursor: 'pointer', '&:hover': { opacity: 0.7 } }}
-                                onClick={() => handleClick(label)}
-                            >
-                                {label}
-                            </Typography>
-                        </Grid>
-                    ))}
-                    <Grid>
-                        <Typography variant="overline">Custom</Typography>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid >
+        </Grid>
     );
 }

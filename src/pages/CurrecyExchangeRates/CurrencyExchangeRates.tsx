@@ -18,7 +18,7 @@ export default function CurrencyExchangeRates(): JSX.Element {
     const [availableCurrenciesLoading, setAvailableCurrenciesLoading] = useState(true);
 
     const [currencyData, setCurrencyData] = useState<CurrencyData[]>([])
-    const [currencyDataLoading, setCurrencyDataLoading] = useState(true);
+    const [currencyDataLoading, setCurrencyDataLoading] = useState(false);
 
     const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe>('1M');
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
@@ -54,7 +54,12 @@ export default function CurrencyExchangeRates(): JSX.Element {
                     localStorage.getItem(`currency_${currencyCode}`) === 'true'
                 );
             setSelectedCurrencies(initialSelected);
-            setInitialLoadComplete(true)
+            setInitialLoadComplete(true);
+
+            // if no currencies are selected initially, ensure loading is false
+            if (initialSelected.length === 0) {
+                setCurrencyDataLoading(false);
+            }
         }
     }, [availableCurrencies]);
 

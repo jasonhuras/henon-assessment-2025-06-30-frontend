@@ -1,23 +1,49 @@
 import { JSX, useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
-import { Container, Grid, Tabs, Tab, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { Container, Grid, Tabs, Tab, Button } from "@mui/material";
 import CurrencyChart from "../../components/CurrencyChart";
 import CurrencyGrid from "../../components/CurrencyGrid";
+import CurrencySelectionDialog from "../../components/CurrencySelectionDialog";
+import { ExchangeRateService } from "../../services/exchangeRateService";
 
 export default function CurrencyConversion(): JSX.Element {
     const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>([]);
+    const [availableCurrencies, setAvailableCurrencies] = useState<{ code: string; name: string; }[]>([]);
+    const [availableCurrenciesLoading, setAvailableCurrenciesLoading] = useState(false);
+
     const [tabValue, setTabValue] = useState(0);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const availableCurrencies = ['EUR/USD', 'EUR/CAD', 'USD/CAD', 'USD/EUR', 'CAD/USD', 'CAD/EUR'];
-
-    // Initialize selected currencies from localStorage on mount
     useEffect(() => {
-        const initialSelected = availableCurrencies.filter(currency =>
-            localStorage.getItem(`currency_${currency}`) === 'true'
-        );
-        setSelectedCurrencies(initialSelected);
+        const loadAvailableCurrencies = async () => {
+            setAvailableCurrenciesLoading(true);
+
+            try {
+                const [apiResponse] = await Promise.all([
+                    ExchangeRateService.getSupportedCurrencies(),
+                    new Promise(resolve => setTimeout(resolve, 250))
+                ]);
+                setAvailableCurrencies(apiResponse.data.pairs);
+            } catch (error) {
+                console.error('Failed to fetch supported currencies:', error);
+            } finally {
+                setAvailableCurrenciesLoading(false);
+            }
+        };
+
+        loadAvailableCurrencies();
     }, []);
+
+    useEffect(() => {
+        if (availableCurrencies.length > 0) {
+            const initialSelected = availableCurrencies
+                .map(currency => currency.code)
+                .filter(currencyCode =>
+                    localStorage.getItem(`currency_${currencyCode}`) === 'true'
+                );
+            setSelectedCurrencies(initialSelected);
+        }
+    }, [availableCurrencies]);
 
     const handleCurrencyToggle = (currencyCode: string, isSelected: boolean) => {
         setSelectedCurrencies(prev => {
@@ -34,7 +60,7 @@ export default function CurrencyConversion(): JSX.Element {
         setTabValue(newValue);
     };
 
-    const handleDialogOpen = () => {
+    const handleDialogOpen = async () => {
         setDialogOpen(true);
     };
 
@@ -54,9 +80,15 @@ export default function CurrencyConversion(): JSX.Element {
                             </Tabs>
                         </Grid>
                         <Grid>
-                            <Button variant="outlined" size="small" onClick={handleDialogOpen}>
-                                Select Currencies ({selectedCurrencies.length})
-                            </Button>
+                            {availableCurrenciesLoading ? (
+                                <Button variant="outlined" size="small" disabled>
+                                    Loading...
+                                </Button>
+                            ) : (
+                                <Button variant="outlined" size="small" onClick={handleDialogOpen}>
+                                    Select Currencies ({selectedCurrencies.length})
+                                </Button>
+                            )}
                         </Grid>
                     </Grid>
                     <Grid sx={{ mt: 2 }}>
@@ -70,28 +102,13 @@ export default function CurrencyConversion(): JSX.Element {
                 </Grid>
             </Grid>
 
-            <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
-                <DialogTitle>Select Currencies</DialogTitle>
-                <DialogContent>
-                    <FormGroup>
-                        {availableCurrencies.map((currency) => (
-                            <FormControlLabel
-                                key={currency}
-                                control={
-                                    <Checkbox
-                                        checked={selectedCurrencies.includes(currency)}
-                                        onChange={(event) => handleCurrencyToggle(currency, event.target.checked)}
-                                    />
-                                }
-                                label={currency}
-                            />
-                        ))}
-                    </FormGroup>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose}>Close</Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
+            <CurrencySelectionDialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                currencies={availableCurrencies}
+                selectedCurrencies={selectedCurrencies}
+                onCurrencyToggle={handleCurrencyToggle}
+            />
+        </Container >
     );
 }

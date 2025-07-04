@@ -4,7 +4,7 @@ import { Container, Grid, Tabs, Tab, Typography } from "@mui/material";
 import CurrencyChart from "../../components/CurrencyChart";
 import CurrencyGrid from "../../components/CurrencyGrid";
 import CurrencySelectionDialog from "../../components/CurrencySelectionDialog";
-import { ExchangeRateService } from "../../services/exchangeRateService";
+import { ExchangeRateService } from "../../services/exchangeRateAPIService";
 import CurrencyData from "../../types/CurrencyData";
 import { SsidChart, TableView } from "@mui/icons-material";
 import SelectCurrenciesButton from "../../components/SelectCurrenciesButton";
@@ -55,7 +55,7 @@ export default function CurrencyExchangeRates(): JSX.Element {
                 );
             setSelectedCurrencies(initialSelected);
             setInitialLoadComplete(true);
-            
+
             // if no currencies are selected initially, ensure loading is false
             if (initialSelected.length === 0) {
                 setCurrencyDataLoading(false);
@@ -164,7 +164,7 @@ export default function CurrencyExchangeRates(): JSX.Element {
             <Navbar />
             <Grid container direction="column" spacing={3}>
                 <Grid>
-                    <Grid container justifyContent="space-between" alignItems="center" sx={{ pb: 1 }} spacing={1}>
+                    <Grid container justifyContent={{ xs: "center", md: "space-between" }} alignItems="center" sx={{ pb: 1 }} spacing={1}>
                         <Grid>
                             <Tabs value={tabValue} onChange={handleTabChange} aria-label="currency data tabs">
                                 <Tab icon={<SsidChart />} label="Graph" />

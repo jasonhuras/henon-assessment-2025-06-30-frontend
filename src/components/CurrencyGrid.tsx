@@ -23,7 +23,9 @@ interface FlattenedCurrencyData {
 const GRID_STATE_KEY = 'currency-grid-state';
 
 export default function CurrencyGrid({ currencyData, loading, setLoading }: CurrencyGridProps) {
-    const { mode } = useColorScheme();
+    const { mode, systemMode } = useColorScheme();
+    const resolvedMode = mode === 'system' ? systemMode : mode;
+    
     const MUItheme = useTheme();
     const gridRef = useRef<AgGridReact>(null);
 
@@ -180,8 +182,8 @@ export default function CurrencyGrid({ currencyData, loading, setLoading }: Curr
 
 
     useEffect(() => {
-        document.body.dataset.agThemeMode = mode;
-    }, [mode]);
+        document.body.dataset.agThemeMode = resolvedMode;
+    }, [resolvedMode]);
 
     if (currencyData.length === 0 && !loading) {
         return (

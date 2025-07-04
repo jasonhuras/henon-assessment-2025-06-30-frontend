@@ -18,11 +18,11 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
     const [chartData, setChartData] = useState<any>(null);
     const MUItheme = useTheme();
 
-    const { mode } = useColorScheme();
+    const { mode, systemMode } = useColorScheme();
+    const resolvedMode = mode === 'system' ? systemMode : mode;
 
     // Process currency data into chart format
     useEffect(() => {
-
         if (!currencyData || currencyData.length === 0) {
             setChartData(null);
             return;
@@ -86,7 +86,7 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
                 plugins: {
                     legend: {
                         labels: {
-                            color: mode === "dark" ? '#fff' : '#000'
+                            color: resolvedMode === "dark" ? '#fff' : '#000'
                         }
                     },
                     tooltip: {
@@ -99,19 +99,19 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
                         title: {
                             display: true,
                             text: 'Date',
-                            color: mode === "dark" ? '#fff' : '#000'
+                            color: resolvedMode === "dark" ? '#fff' : '#000'
                         },
-                        ticks: { color: mode === "dark" ? '#fff' : '#000' },
-                        grid: { color: mode === "dark" ? '#333' : '#ddd' }
+                        ticks: { color: resolvedMode === "dark" ? '#fff' : '#000' },
+                        grid: { color: resolvedMode === "dark" ? '#333' : '#ddd' }
                     },
                     y: {
                         title: {
                             display: true,
                             text: 'Exchange Rate',
-                            color: mode === "dark" ? '#fff' : '#000'
+                            color: resolvedMode === "dark" ? '#fff' : '#000'
                         },
-                        ticks: { color: mode === "dark" ? '#fff' : '#000' },
-                        grid: { color: mode === "dark" ? '#333' : '#ddd' }
+                        ticks: { color: resolvedMode === "dark" ? '#fff' : '#000' },
+                        grid: { color: resolvedMode === "dark" ? '#333' : '#ddd' }
                     }
                 },
                 interaction: {
@@ -127,7 +127,7 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
                 chartRef.current.destroy();
             }
         };
-    }, [chartData, mode]);
+    }, [chartData, resolvedMode]);
 
     if (loading) {
         return (
@@ -153,7 +153,7 @@ export default function CurrencyChart({ currencyData, loading, setLoading }: Cur
     }
 
     return (
-        <Paper elevation={mode === "dark" ? 0 : 20}>
+        <Paper elevation={resolvedMode === "dark" ? 0 : 20}>
             <Box sx={{ height: 500, width: '100%', p: 3 }}>
                 <canvas ref={canvasRef} />
             </Box>

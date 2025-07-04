@@ -84,37 +84,35 @@ export default function ColorWheel() {
                     <Grid container spacing={1}>
                         {PRESET_COLORS.map((color) => (
                             <Grid key={color.value}>
-                                <Tooltip title={color.name} arrow>
-                                    <Box
-                                        onClick={() => handleColorSelect(color.value)}
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: color.value,
-                                            borderRadius: '50%',
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            transition: 'all 0.2s ease',
-                                            border: '2px solid',
-                                            borderColor: primaryColor === color.value ? 'text.primary' : 'transparent',
-                                            '&:hover': {
-                                                transform: 'scale(1.1)',
-                                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                                            },
-                                            '&::after': primaryColor === color.value ? {
-                                                content: '\"✓\"',
-                                                position: 'absolute',
-                                                top: '50%',
-                                                left: '50%',
-                                                transform: 'translate(-50%, -50%)',
-                                                color: 'white',
-                                                fontSize: '14px',
-                                                fontWeight: 'bold',
-                                                textShadow: '0 1px 2px rgba(0,0,0,0.5)'
-                                            } : {}
-                                        }}
-                                    />
-                                </Tooltip>
+                                <Box
+                                    onClick={() => handleColorSelect(color.value)}
+                                    sx={{
+                                        width: 40,
+                                        height: 40,
+                                        backgroundColor: color.value,
+                                        borderRadius: '50%',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        transition: 'all 0.2s ease',
+                                        border: '2px solid',
+                                        borderColor: primaryColor === color.value ? 'text.primary' : 'transparent',
+                                        '&:hover': {
+                                            transform: 'scale(1.1)',
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                                        },
+                                        '&::after': primaryColor === color.value ? {
+                                            content: '\"✓\"',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            color: 'white',
+                                            fontSize: '14px',
+                                            fontWeight: 'bold',
+                                            textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                                        } : {}
+                                    }}
+                                />
                             </Grid>
                         ))}
                     </Grid>

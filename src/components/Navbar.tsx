@@ -10,6 +10,9 @@ export default function Navbar(): JSX.Element {
 
     const { mode, setMode } = useColorScheme();
 
+    const { systemMode } = useColorScheme();
+    const resolvedMode = mode === 'system' ? systemMode : mode;
+
     const toggleTheme = () => {
         setMode(mode === 'light' ? 'dark' : 'light');
     }
@@ -80,7 +83,7 @@ export default function Navbar(): JSX.Element {
                                 }}
                                 aria-label="toggle theme"
                             >
-                                {mode === "dark" ? <LightMode /> : <DarkMode />}
+                                {resolvedMode === "dark" ? <LightMode /> : <DarkMode />}
                             </IconButton>
                         </Tooltip>
                     </Grid>

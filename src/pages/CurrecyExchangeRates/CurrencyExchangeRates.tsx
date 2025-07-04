@@ -55,7 +55,7 @@ export default function CurrencyExchangeRates(): JSX.Element {
                 );
             setSelectedCurrencies(initialSelected);
             setInitialLoadComplete(true);
-
+            
             // if no currencies are selected initially, ensure loading is false
             if (initialSelected.length === 0) {
                 setCurrencyDataLoading(false);

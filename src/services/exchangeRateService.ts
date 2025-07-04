@@ -40,7 +40,7 @@ export class ExchangeRateService {
     const queryParams = new URLSearchParams({
       base_currency_code: params.base_currency_code,
       target_currency_code: params.target_currency_code,
-      start_date: params.start_date.toDateString(),
+      start_date: new Date(params.start_date.setDate(params.start_date.getDate() + 1)).toDateString(),
       end_date: params.end_date.toDateString(),
     });
 

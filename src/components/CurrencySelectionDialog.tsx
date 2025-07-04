@@ -39,36 +39,43 @@ export default function CurrencySelectionDialog({
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCurrencies, setFilteredCurrencies] = useState<Currency[]>([]);
+    const [sortedCurrencies, setSortedCurrencies] = useState<Currency[]>([]);
 
+    // Sort currencies only when dialog opens
     useEffect(() => {
-        let filtered = currencies;
+        if (open && currencies.length > 0) {
+            const sorted = [...currencies].sort((a, b) => {
+                const aSelected = selectedCurrencies.includes(a.code);
+                const bSelected = selectedCurrencies.includes(b.code);
+
+                // selected comes first
+                if (aSelected !== bSelected) {
+                    return aSelected ? -1 : 1;
+                }
+
+                // then sort alphabetically by code
+                return a.code.localeCompare(b.code);
+            });
+            setSortedCurrencies(sorted);
+        }
+    }, [open, currencies]);
+
+    // Filter sorted currencies based on search term (no re-sorting)
+    useEffect(() => {
+        let filtered = sortedCurrencies;
 
         // Apply search filter
         if (searchTerm) {
-            filtered = currencies.filter(
+            filtered = sortedCurrencies.filter(
                 currency =>
                     currency.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     currency.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        // selected currencies first, then alphabetically
-        const sorted = [...filtered].sort((a, b) => {
-            const aSelected = selectedCurrencies.includes(a.code);
-            const bSelected = selectedCurrencies.includes(b.code);
-
-            // selected comes first
-            if (aSelected !== bSelected) {
-                return aSelected ? -1 : 1;
-            }
-
-            // thensort alphabetically by code
-            return a.code.localeCompare(b.code);
-        });
-
-        setFilteredCurrencies(sorted);
+        setFilteredCurrencies(filtered);
         setCurrentPage(1);
-    }, [currencies, searchTerm, selectedCurrencies]);
+    }, [sortedCurrencies, searchTerm]);
 
     // pagination
     const totalPages = Math.ceil(filteredCurrencies.length / ITEMS_PER_PAGE);

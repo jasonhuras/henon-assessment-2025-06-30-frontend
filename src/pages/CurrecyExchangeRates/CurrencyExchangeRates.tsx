@@ -114,7 +114,6 @@ export default function CurrencyExchangeRates(): JSX.Element {
 
     const getTimeframeDays = (timeframe: Timeframe): number => {
         switch (timeframe) {
-            case '1D': return 1;
             case '5D': return 5;
             case '1M': return 30;
             case '6M': return 180;

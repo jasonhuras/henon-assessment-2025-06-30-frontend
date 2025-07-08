@@ -9,7 +9,7 @@ import CurrencyData from "../../types/CurrencyData";
 import { SsidChart, TableView } from "@mui/icons-material";
 import SelectCurrenciesButton from "../../components/SelectCurrenciesButton";
 
-const timeframes = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '2Y'] as const;
+const timeframes = ['5D', '1M', '6M', 'YTD', '1Y', '2Y'] as const;
 type Timeframe = typeof timeframes[number];
 
 export default function CurrencyExchangeRates(): JSX.Element {
